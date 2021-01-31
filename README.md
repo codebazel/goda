@@ -93,3 +93,9 @@ goda graph github.com/loov/goda/...:root | dot -Tsvg -o graph.svg
 `goda` is intended for more complicated queries and analysis. Some of the features can be reproduced by format flags and scripts. However, this library aims to make even complicated analysis fast.
 
 Also, `goda` can be used together with `go list` and `go mod`.
+
+## How to change the hrefs with custom driver 
+
+Setup a program with environment variable `GODAHREFDRIVER` or a program in `PATH` with name `godahrefdriver`.
+
+The driver reads hrefs from stdin one per line, and output `href new_href` pairs one per line.

@@ -91,6 +91,7 @@ func (cmd *Command) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface
 	}
 
 	graph := pkggraph.From(result)
+	dot.genHrefs(graph)
 	if cmd.clusters {
 		dot.WriteClusters(graph)
 	} else {
@@ -109,6 +110,7 @@ type Dot struct {
 	shortID bool
 
 	label *template.Template
+	hrefs map[string]string
 }
 
 func (ctx *Dot) Label(p *pkggraph.Node) string {
@@ -159,11 +161,19 @@ func (ctx *Dot) TreeLabel(tree *pkggraph.Tree, parentPrinted bool) string {
 }
 
 func (ctx *Dot) Ref(p *pkggraph.Node) string {
-	return fmt.Sprintf(`href=%q `, ctx.docs+p.ID)
+	href := ctx.docs + p.ID
+	if h, ok := ctx.hrefs[href]; ok {
+		href = h
+	}
+	return fmt.Sprintf(`href=%q `, href)
 }
 
 func (ctx *Dot) TreeRef(tree *pkggraph.Tree) string {
-	return fmt.Sprintf(`href=%q `, ctx.docs+tree.Path)
+	href := ctx.docs + tree.Path
+	if h, ok := ctx.hrefs[href]; ok {
+		href = h
+	}
+	return fmt.Sprintf(`href=%q `, href)
 }
 
 func (ctx *Dot) writeGraphProperties() {
